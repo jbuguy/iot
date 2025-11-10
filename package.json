@@ -1,0 +1,16 @@
+{
+  "name": "pi-server-node",
+  "version": "1.0.0",
+  "description": "Node.js server to receive data from Raspberry Pi and invoke ML model.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0"
+  }
+}

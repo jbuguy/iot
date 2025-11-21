@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+ultralytics[cpu]
+pytesseract
+python-dateutil
+Pillow
+pydantic
+torch

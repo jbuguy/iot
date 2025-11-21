@@ -1,0 +1,58 @@
+
+services:
+  # Service 1: The Node.js Server (Your Main API)
+  node-server:
+    build: ./node-server
+    container_name: node-server
+    ports:
+      - "5001:5001" # Exposes your API to the outside world on port 5001
+    environment:
+      # This is the internal URL to your MongoDB container
+      - MONGODB_URI=mongodb://mongo-db:27017/fridgeDB
+      # This is the internal URL to your Python ML service
+      - PYTHON_API_URL=http://python-api:8000
+      # ❗️ IMPORTANT: Paste your Hugging Face API Key here
+      - HF_API_KEY="REDACTED" 
+    volumes:
+      - ./node-server:/app
+      - /app/node_modules
+    networks:
+      - app-network
+    depends_on:
+      - mongo-db
+      - python-api
+    restart: always
+
+  # Service 2: The Python ML Service (YOLO + Tesseract)
+  python-api:
+    build: ./python-api
+    container_name: python-api
+    # Note: No ports exposed, as it's only called internally by node-server
+    volumes:
+      # This volume caches the YOLO model so it's not re-downloaded
+      - ultralytics-cache:/root/.cache/Ultralytics
+    networks:
+      - app-network
+    restart: always
+
+  # Service 3: The MongoDB Database
+  mongo-db:
+    image: mongo:latest
+    container_name: mongo-db
+    ports:
+      - "27017:27017" # Good for debugging with MongoDB Compass
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+    restart: always
+
+# Define the shared volumes
+volumes:
+  mongo-data:
+  ultralytics-cache:
+
+# Define the shared network
+networks:
+  app-network:
+    driver: bridge
